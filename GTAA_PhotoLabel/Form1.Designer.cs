@@ -37,7 +37,10 @@ namespace GTAA_PhotoLabel
             this.rosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.configureRosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.filePhoto = new System.Windows.Forms.PictureBox();
+            this.FileName_label = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.filePhoto)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -68,6 +71,7 @@ namespace GTAA_PhotoLabel
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
             this.openToolStripMenuItem.Text = "&Open Folder";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // rosterToolStripMenuItem
             // 
@@ -91,17 +95,39 @@ namespace GTAA_PhotoLabel
             this.configureRosterToolStripMenuItem.Text = "&Configure Rosters";
             this.configureRosterToolStripMenuItem.Click += new System.EventHandler(this.configureRosterToolStripMenuItem_Click);
             // 
+            // filePhoto
+            // 
+            this.filePhoto.Location = new System.Drawing.Point(0, 51);
+            this.filePhoto.Name = "filePhoto";
+            this.filePhoto.Size = new System.Drawing.Size(588, 356);
+            this.filePhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.filePhoto.TabIndex = 1;
+            this.filePhoto.TabStop = false;
+            // 
+            // FileName_label
+            // 
+            this.FileName_label.AutoSize = true;
+            this.FileName_label.Location = new System.Drawing.Point(265, 32);
+            this.FileName_label.Name = "FileName_label";
+            this.FileName_label.Size = new System.Drawing.Size(63, 16);
+            this.FileName_label.TabIndex = 2;
+            this.FileName_label.Text = "Select Folder";
+            this.FileName_label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 475);
+            this.Controls.Add(this.FileName_label);
+            this.Controls.Add(this.filePhoto);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Hello";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.filePhoto)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -116,6 +142,8 @@ namespace GTAA_PhotoLabel
         private ToolStripMenuItem rosterToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripMenuItem configureRosterToolStripMenuItem;
+        private PictureBox filePhoto;
+        private Label FileName_label;
     }
 }
 
