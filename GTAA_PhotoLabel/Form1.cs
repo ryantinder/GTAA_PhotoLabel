@@ -12,21 +12,26 @@ namespace GTAA_PhotoLabel
 {
     public partial class Form1 : Form
     {
-        private MainMenu mainMenu;
-
+        private string[] sportsArr = {"Basketball", "Football", "Volleyball" };
         public Form1()
         {
             InitializeComponent();
-            mainMenu = new MainMenu();
-            MenuItem File = mainMenu.MenuItems.Add("&File");
-            File.MenuItems.Add(new MenuItem("&New"));
-            File.MenuItems.Add(new MenuItem("&Open"));
-            File.MenuItems.Add(new MenuItem("&Exit"));
-            this.Menu = mainMenu;
-            MenuItem About = mainMenu.MenuItems.Add("&About");
-            About.MenuItems.Add(new MenuItem("&About"));
-            this.Menu = mainMenu;
-            mainMenu.GetForm().BackColor = Color.Indigo;
+            foreach (string val in sportsArr) {
+                var radioItem = new ToolStripRadioButtonMenuItem(val);
+                radioItem.Click += new EventHandler(this.rosterSelected);
+
+                rosterToolStripMenuItem.DropDownItems.Insert(0, radioItem);
+            }
+            Console.WriteLine(this.menuStrip1.Items["&Roster"]);
+        }
+        private void rosterSelected(object sender, EventArgs e)
+        {
+            var actualSender = (ToolStripRadioButtonMenuItem)sender;
+            Console.WriteLine(actualSender.Text);
+        }
+
+        private void configureRosterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
         }
     }
