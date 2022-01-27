@@ -6,12 +6,18 @@ namespace GTAA_PhotoLabel
 {
     public class ToolStripRadioButtonMenuItem : ToolStripMenuItem
     {
+        public Classes.Roster roster;
         public ToolStripRadioButtonMenuItem()
             : base()
         {
             Initialize();
         }
-
+        public ToolStripRadioButtonMenuItem(Classes.Roster roster)
+        : base(roster.sport, null, (EventHandler)null)
+        {
+            Initialize();
+            this.roster = roster;
+        }
         public ToolStripRadioButtonMenuItem(string text)
             : base(text, null, (EventHandler)null)
         {
