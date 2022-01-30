@@ -43,6 +43,9 @@ namespace GTAA_PhotoLabel
             this.Next_button = new System.Windows.Forms.Button();
             this.Prev_button = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.current_sport = new System.Windows.Forms.Label();
+            this.config_roster = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filePhoto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -56,7 +59,7 @@ namespace GTAA_PhotoLabel
             this.rosterToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(995, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1054, 28);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -102,9 +105,9 @@ namespace GTAA_PhotoLabel
             // 
             // filePhoto
             // 
-            this.filePhoto.Location = new System.Drawing.Point(0, 51);
+            this.filePhoto.Location = new System.Drawing.Point(0, 66);
             this.filePhoto.Name = "filePhoto";
-            this.filePhoto.Size = new System.Drawing.Size(735, 467);
+            this.filePhoto.Size = new System.Drawing.Size(735, 452);
             this.filePhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.filePhoto.TabIndex = 1;
             this.filePhoto.TabStop = false;
@@ -112,7 +115,7 @@ namespace GTAA_PhotoLabel
             // FileName_label
             // 
             this.FileName_label.AutoSize = true;
-            this.FileName_label.Location = new System.Drawing.Point(265, 32);
+            this.FileName_label.Location = new System.Drawing.Point(324, 47);
             this.FileName_label.Name = "FileName_label";
             this.FileName_label.Size = new System.Drawing.Size(87, 16);
             this.FileName_label.TabIndex = 2;
@@ -121,7 +124,7 @@ namespace GTAA_PhotoLabel
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(0, 568);
+            this.textBox1.Location = new System.Drawing.Point(15, 560);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(735, 22);
             this.textBox1.TabIndex = 3;
@@ -149,19 +152,60 @@ namespace GTAA_PhotoLabel
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(743, 51);
+            this.dataGridView1.Location = new System.Drawing.Point(741, 66);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(240, 467);
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(299, 452);
             this.dataGridView1.TabIndex = 6;
+            this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
+            // 
+            // current_sport
+            // 
+            this.current_sport.AutoSize = true;
+            this.current_sport.Location = new System.Drawing.Point(738, 47);
+            this.current_sport.Name = "current_sport";
+            this.current_sport.Size = new System.Drawing.Size(90, 16);
+            this.current_sport.TabIndex = 7;
+            this.current_sport.Text = "Current Sport: ";
+            this.current_sport.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // config_roster
+            // 
+            this.config_roster.Location = new System.Drawing.Point(935, 40);
+            this.config_roster.Name = "config_roster";
+            this.config_roster.Size = new System.Drawing.Size(105, 23);
+            this.config_roster.TabIndex = 8;
+            this.config_roster.Text = "Configure";
+            this.config_roster.UseVisualStyleBackColor = true;
+            this.config_roster.Click += new System.EventHandler(this.configureRosterToolStripMenuItem_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 537);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(91, 16);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Console Input:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(995, 637);
+            this.ClientSize = new System.Drawing.Size(1054, 594);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.config_roster);
+            this.Controls.Add(this.current_sport);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.Prev_button);
             this.Controls.Add(this.Next_button);
@@ -196,6 +240,9 @@ namespace GTAA_PhotoLabel
         private Button Next_button;
         private Button Prev_button;
         private DataGridView dataGridView1;
+        private Label current_sport;
+        private Button config_roster;
+        private Label label1;
     }
 }
 

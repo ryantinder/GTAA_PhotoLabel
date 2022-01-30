@@ -23,25 +23,40 @@ namespace GTAA_PhotoLabel
         private DataTable playerTable;
         private string[] activeFiles;
         private int index = 0;
+        private List<Classes.Player> activeRoster;
+        private ToolStripItem configButton;
+        private ToolStripSeparator spacer;
         public Form1()
         {
             InitializeComponent();
             loadRosters();
-            foreach (Classes.Roster roster in rosterList) {
-                var radioItem = new ToolStripRadioButtonMenuItem(roster);
-                radioItem.Click += new EventHandler(this.rosterSelected);
-                rosterToolStripMenuItem.DropDownItems.Insert(0, radioItem);
-            }
+            configButton = rosterToolStripMenuItem.DropDownItems[rosterToolStripMenuItem.DropDownItems.Count - 1];
+            spacer = (ToolStripSeparator)rosterToolStripMenuItem.DropDownItems[rosterToolStripMenuItem.DropDownItems.Count - 2];
             playerTable = new DataTable();
-            playerTable.Columns.Add("No.", typeof(int));
+            playerTable.Columns.Add("No.", typeof(string));
             playerTable.Columns.Add("Last", typeof(string));
             playerTable.Columns.Add("First", typeof(string));
+            Initialize();
 
-            rosterToolStripMenuItem.DropDownItems[0].PerformClick();
+
+
             Console.WriteLine(this.menuStrip1.Items["&Roster"]);
         }
 
-
+        private void Initialize()
+        {
+            rosterToolStripMenuItem.DropDownItems.Clear();
+            rosterToolStripMenuItem.DropDownItems.Add(spacer);
+            rosterToolStripMenuItem.DropDownItems.Add(configButton);
+            int i = 0;
+            foreach (Classes.Roster roster in rosterList)
+            {
+                var radioItem = new ToolStripRadioButtonMenuItem(roster);
+                radioItem.Click += new EventHandler(this.rosterSelected);
+                rosterToolStripMenuItem.DropDownItems.Insert(0 + i++, radioItem);
+            }
+            rosterToolStripMenuItem.DropDownItems[0].PerformClick();
+        }
         private void nextImage()
         {
             index = ++index > activeFiles.Length - 1 ? activeFiles.Length - 1 : index;
@@ -77,11 +92,14 @@ namespace GTAA_PhotoLabel
                 playerTable.Rows.Add(player.number, player.lastName, player.firstName);
             }
             dataGridView1.DataSource = playerTable;
+            current_sport.Text = actualSender.roster.sport;
+            activeRoster = actualSender.roster.players;
         }
 
         private void configureRosterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             rosterConfigForm = new Form2(rosterList);
+            rosterConfigForm.Owner = this;
             rosterConfigForm.Show();
         }
 
@@ -100,7 +118,7 @@ namespace GTAA_PhotoLabel
                 loadImage();
             }
         }
-        private void renameFile(string newName, string oldPath)
+        private void renameFile(Classes.Player player, string oldPath)
         {
             
             try
@@ -111,14 +129,19 @@ namespace GTAA_PhotoLabel
                 {
                     throw new Exception("oldPath cannot be null");
                 } 
-                if (newName == null)
+                if (player == null)
                 {
-                    throw new Exception("newName cannot be null");
+                    throw new Exception("player cannot be null");
+                }
+                if (player.lastName == null || player.firstName == null)
+                {
+                    throw new Exception("Player names cannot be null");
                 }
                 var oldPathSplits = oldPath.Split('\\');
-                oldPathSplits[oldPathSplits.Length - 1] = newName;
+                oldPathSplits[oldPathSplits.Length - 1] = player.lastName + player.firstName[0] + "_" + oldPathSplits[oldPathSplits.Length - 1];
                 oldPathSplits[0] += "\\";
                 var newFilePath = Path.Combine(oldPathSplits);
+                Path.ChangeExtension(newFilePath, ".png");
                 if (File.Exists(newFilePath))
                 {
                     File.Delete(newFilePath);
@@ -133,7 +156,7 @@ namespace GTAA_PhotoLabel
             } catch (ArgumentException e)
             {
                 Console.WriteLine("Old path: " + oldPath);
-                Console.WriteLine("new name: " + newName);
+                Console.WriteLine("new name: " + player.lastName + player.firstName[0]);
                 Console.WriteLine("File name contains illegal characters.");
                 Console.WriteLine(e.Message);
             } catch (Exception e)
@@ -145,8 +168,7 @@ namespace GTAA_PhotoLabel
 
         private void Next_button_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(ConfigurationManager.AppSettings.Get("rosterArray"));
-            //nextImage();
+            nextImage();
         }
 
         private void Prev_button_Click(object sender, EventArgs e)
@@ -159,7 +181,7 @@ namespace GTAA_PhotoLabel
             if (e.KeyChar == 13) //Enter
             {
                 var input = textBox1.Text.Trim();
-                if (int.TryParse(input, out int num))
+                if (int.TryParse(input, out int num) && activeFiles != null)
                 {
                     inputPlayerNumber(num);
                 }
@@ -167,18 +189,24 @@ namespace GTAA_PhotoLabel
             }
         }
 
-        private void configRoster(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void inputPlayerNumber(int num)
         {
-            throw new NotImplementedException();
+            foreach(var player in activeRoster)
+            {
+                if (player.number == num)
+                {
+                    renameFile(player, activeFiles[index]);
+                    break;
+                }
+            }
         }
         private void loadRosters()
         {
             BinaryFormatter bf = new BinaryFormatter();
+            if (!File.Exists("rosters.binary"))
+            {
+                File.Create("rosters.binary");
+            }
             FileStream fsin = new FileStream("rosters.binary", FileMode.Open, FileAccess.Read, FileShare.None);
             try
             {
@@ -191,6 +219,14 @@ namespace GTAA_PhotoLabel
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+        public void saveRosterData(List<Classes.Roster> list)
+        {
+            rosterList = list;
+            Initialize();
+            saveRosters();
+
         }
         private void saveRosters()
         {
@@ -207,6 +243,14 @@ namespace GTAA_PhotoLabel
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+        }
+
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (activeFiles != null && int.TryParse(dataGridView1.Rows[e.RowIndex].Cells[0].Value as string, out int num))
+            {
+                inputPlayerNumber(num);
             }
         }
     }
