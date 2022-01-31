@@ -17,6 +17,11 @@ namespace GTAA_PhotoLabel.Classes
             players = new List<Player>();
             sport = "Untitled";
         }
+        public Roster(string sport)
+        {
+            players = new List<Player>();
+            this.sport = sport;
+        }
         private void addPlayer(Player player)
         {
             players.Add(player);

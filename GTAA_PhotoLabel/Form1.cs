@@ -1,18 +1,11 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
 
 namespace GTAA_PhotoLabel
 {
@@ -33,6 +26,7 @@ namespace GTAA_PhotoLabel
             spacer = (ToolStripSeparator)rosterToolStripMenuItem.DropDownItems[rosterToolStripMenuItem.DropDownItems.Count - 2];
             playerTable = new DataTable();
             activeFiles = new List<Classes.PhotoFile>();
+            rosterList = new List<Classes.Roster>();
             playerTable.Columns.Add("No.", typeof(string));
             playerTable.Columns.Add("Last", typeof(string));
             playerTable.Columns.Add("First", typeof(string));
@@ -243,14 +237,20 @@ namespace GTAA_PhotoLabel
 
         private void Next_button_Click(object sender, EventArgs e)
         {
-            nextImage();
-            updateCounter();
+            if (activeFiles != null && activeFiles.Count > 0)
+            {
+                nextImage();
+                updateCounter();
+            }
         }
 
         private void Prev_button_Click(object sender, EventArgs e)
         {
-            lastImage();
-            updateCounter();
+            if (activeFiles != null && activeFiles.Count > 0)
+            {
+                lastImage();
+                updateCounter();
+            }
         }
 
         private void updateCounter()
@@ -263,7 +263,7 @@ namespace GTAA_PhotoLabel
             if (e.KeyChar == 13) //Enter
             {
                 var input = textBox1.Text.Trim();
-                if (int.TryParse(input, out int num) && activeFiles != null)
+                if (int.TryParse(input, out int num) && activeFiles != null && activeFiles.Count > 0)
                 {
                     inputPlayerNumber(num);
                 }
@@ -294,7 +294,16 @@ namespace GTAA_PhotoLabel
             {
                 using (fsin)
                 {
-                    rosterList = (List<Classes.Roster>)bf.Deserialize(fsin);
+                    if (fsin.Length == 0)
+                    {
+                        Classes.Roster r = new Classes.Roster("Placeholder");
+                        rosterList.Add(r);
+                        saveRosters();
+                    }
+                    else
+                    {
+                        rosterList = (List<Classes.Roster>)bf.Deserialize(fsin);
+                    }
                 }
             }
             catch (Exception e)
@@ -330,7 +339,7 @@ namespace GTAA_PhotoLabel
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (activeFiles != null && int.TryParse(dataGridView1.Rows[e.RowIndex].Cells[0].Value as string, out int num))
+            if (activeFiles != null && activeFiles.Count > 0 && int.TryParse(dataGridView1.Rows[e.RowIndex].Cells[0].Value as string, out int num))
             {
                 inputPlayerNumber(num);
             }
@@ -348,8 +357,11 @@ namespace GTAA_PhotoLabel
 
         private void revert_Click(object sender, EventArgs e)
         {
-            renameFile(activeFiles[index].originalName, activeFiles[index].filePath);
-            lastImage();
+            if (activeFiles != null && activeFiles.Count > 0)
+            {
+                renameFile(activeFiles[index].originalName, activeFiles[index].filePath);
+                lastImage();
+            }
         }
     }
 }
