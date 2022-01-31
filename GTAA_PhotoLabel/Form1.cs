@@ -21,7 +21,7 @@ namespace GTAA_PhotoLabel
         private Form2 rosterConfigForm;
         public List<Classes.Roster> rosterList;
         private DataTable playerTable;
-        private string[] activeFiles;
+        private List<Classes.PhotoFile> activeFiles;
         private int index = 0;
         private List<Classes.Player> activeRoster;
         private ToolStripItem configButton;
@@ -29,18 +29,16 @@ namespace GTAA_PhotoLabel
         public Form1()
         {
             InitializeComponent();
-            loadRosters();
             configButton = rosterToolStripMenuItem.DropDownItems[rosterToolStripMenuItem.DropDownItems.Count - 1];
             spacer = (ToolStripSeparator)rosterToolStripMenuItem.DropDownItems[rosterToolStripMenuItem.DropDownItems.Count - 2];
             playerTable = new DataTable();
+            activeFiles = new List<Classes.PhotoFile>();
             playerTable.Columns.Add("No.", typeof(string));
             playerTable.Columns.Add("Last", typeof(string));
             playerTable.Columns.Add("First", typeof(string));
+            loadRosters();
             Initialize();
 
-
-
-            Console.WriteLine(this.menuStrip1.Items["&Roster"]);
         }
 
         private void Initialize()
@@ -56,24 +54,28 @@ namespace GTAA_PhotoLabel
                 rosterToolStripMenuItem.DropDownItems.Insert(0 + i++, radioItem);
             }
             rosterToolStripMenuItem.DropDownItems[0].PerformClick();
+            jpgOption.PerformClick();
+            appendTrue.PerformClick();
+            counter.Text = "0/0";
         }
         private void nextImage()
         {
-            index = ++index > activeFiles.Length - 1 ? activeFiles.Length - 1 : index;
-            string filePath = activeFiles[index];
+            index = ++index > activeFiles.Count - 1 ? activeFiles.Count - 1 : index;
+            string filePath = activeFiles[index].filePath;
             filePhoto.Load(filePath);
             setFilenameLabel(filePath);
         }
         private void loadImage()
         {
-            filePhoto.Load(activeFiles[index]);
-            setFilenameLabel(activeFiles[index]);
+            filePhoto.Load(activeFiles[index].filePath);
+            setFilenameLabel(activeFiles[index].filePath);
+            updateCounter();
         }
 
         private void lastImage()
         {
             index = --index < 0 ? 0 : index;
-            string filePath = activeFiles[index];
+            string filePath = activeFiles[index].filePath;
             filePhoto.Load(filePath);
             setFilenameLabel(filePath);
         }
@@ -113,7 +115,11 @@ namespace GTAA_PhotoLabel
             {
                 dirName = dialog.FileName;
                 dialog.Dispose();
-                activeFiles = Directory.GetFiles(dirName);
+                foreach (var file in Directory.GetFiles(dirName))
+                {
+                    var photo = new Classes.PhotoFile(file);
+                    activeFiles.Add(photo);
+                }
                 index = 0;
                 loadImage();
             }
@@ -138,10 +144,22 @@ namespace GTAA_PhotoLabel
                     throw new Exception("Player names cannot be null");
                 }
                 var oldPathSplits = oldPath.Split('\\');
-                oldPathSplits[oldPathSplits.Length - 1] = player.lastName + player.firstName[0] + "_" + oldPathSplits[oldPathSplits.Length - 1];
+                if (append)
+                {
+                    oldPathSplits[oldPathSplits.Length - 1] = player.lastName + player.firstName[0] + "_" + oldPathSplits[oldPathSplits.Length - 1];
+                } else
+                {
+                    oldPathSplits[oldPathSplits.Length - 1] = player.lastName + player.firstName[0] + oldPathSplits[oldPathSplits.Length - 1];
+                }
                 oldPathSplits[0] += "\\";
                 var newFilePath = Path.Combine(oldPathSplits);
-                Path.ChangeExtension(newFilePath, ".png");
+                if (useJPG)
+                {
+                    Path.ChangeExtension(newFilePath, ".jpg");
+                } else
+                {
+                    Path.ChangeExtension(newFilePath, ".png");
+                }
                 if (File.Exists(newFilePath))
                 {
                     File.Delete(newFilePath);
@@ -152,7 +170,7 @@ namespace GTAA_PhotoLabel
                 }
              
                 File.Move(oldPath, newFilePath);
-                activeFiles[index] = newFilePath;
+                activeFiles[index - 1].filePath = newFilePath;
             } catch (ArgumentException e)
             {
                 Console.WriteLine("Old path: " + oldPath);
@@ -166,14 +184,78 @@ namespace GTAA_PhotoLabel
 
         }
 
+        private void renameFile(string newName, string oldPath)
+        {
+
+            try
+            {
+                filePhoto.Image.Dispose();
+                nextImage();
+                if (oldPath == null)
+                {
+                    throw new Exception("oldPath cannot be null");
+                }
+                if (newName == null)
+                {
+                    throw new Exception("newName cannot be null");
+                }
+
+                var oldPathSplits = oldPath.Split('\\');
+
+                oldPathSplits[oldPathSplits.Length - 1] = newName;
+               
+                oldPathSplits[0] += "\\";
+                var newFilePath = Path.Combine(oldPathSplits);
+                if (useJPG)
+                {
+                    Path.ChangeExtension(newFilePath, ".jpg");
+                }
+                else
+                {
+                    Path.ChangeExtension(newFilePath, ".png");
+                }
+                if (File.Exists(newFilePath))
+                {
+                    File.Delete(newFilePath);
+                }
+                if (!File.Exists(oldPath))
+                {
+                    throw new Exception(oldPath + " path does not exist");
+                }
+
+                File.Move(oldPath, newFilePath);
+                activeFiles[index - 1].filePath = newFilePath;
+
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine("Old path: " + oldPath);
+                Console.WriteLine("new name: " + newName);
+                Console.WriteLine("File name contains illegal characters.");
+                Console.WriteLine(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+        }
+
         private void Next_button_Click(object sender, EventArgs e)
         {
             nextImage();
+            updateCounter();
         }
 
         private void Prev_button_Click(object sender, EventArgs e)
         {
             lastImage();
+            updateCounter();
+        }
+
+        private void updateCounter()
+        {
+            counter.Text = (index + 1) + "/" + activeFiles.Count;
         }
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -195,7 +277,7 @@ namespace GTAA_PhotoLabel
             {
                 if (player.number == num)
                 {
-                    renameFile(player, activeFiles[index]);
+                    renameFile(player, activeFiles[index].filePath);
                     break;
                 }
             }
@@ -252,6 +334,22 @@ namespace GTAA_PhotoLabel
             {
                 inputPlayerNumber(num);
             }
+        }
+        private bool append = false; //gets set to true on run
+        private void toggleAppend(object sender, EventArgs e)
+        {
+            append = append == true ? false : true;
+        }
+        private bool useJPG = false; //Gets set to true on run
+        private void toggleJPG_PNG(object sender, EventArgs e)
+        {
+            useJPG = useJPG == true ? false : true;
+        }
+
+        private void revert_Click(object sender, EventArgs e)
+        {
+            renameFile(activeFiles[index].originalName, activeFiles[index].filePath);
+            lastImage();
         }
     }
 }

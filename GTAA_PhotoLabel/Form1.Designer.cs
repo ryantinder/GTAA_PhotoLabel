@@ -34,9 +34,16 @@ namespace GTAA_PhotoLabel
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ImageFormat = new System.Windows.Forms.ToolStripMenuItem();
+            this.jpgOption = new GTAA_PhotoLabel.ToolStripRadioButtonMenuItem();
+            this.pngOption = new GTAA_PhotoLabel.ToolStripRadioButtonMenuItem();
+            this.appendUnderscoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.appendTrue = new GTAA_PhotoLabel.ToolStripRadioButtonMenuItem();
+            this.appendFalse = new GTAA_PhotoLabel.ToolStripRadioButtonMenuItem();
             this.rosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.configureRosterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.filePhoto = new System.Windows.Forms.PictureBox();
             this.FileName_label = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -46,6 +53,8 @@ namespace GTAA_PhotoLabel
             this.current_sport = new System.Windows.Forms.Label();
             this.config_roster = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.revert = new System.Windows.Forms.Button();
+            this.counter = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filePhoto)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -66,7 +75,9 @@ namespace GTAA_PhotoLabel
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem});
+            this.openToolStripMenuItem,
+            this.ImageFormat,
+            this.appendUnderscoreToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "&File";
@@ -80,6 +91,56 @@ namespace GTAA_PhotoLabel
             this.openToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
             this.openToolStripMenuItem.Text = "&Open Folder";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // ImageFormat
+            // 
+            this.ImageFormat.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.jpgOption,
+            this.pngOption});
+            this.ImageFormat.Name = "ImageFormat";
+            this.ImageFormat.Size = new System.Drawing.Size(227, 26);
+            this.ImageFormat.Text = "Image Format";
+            // 
+            // jpgOption
+            // 
+            this.jpgOption.CheckOnClick = true;
+            this.jpgOption.Name = "jpgOption";
+            this.jpgOption.Size = new System.Drawing.Size(172, 26);
+            this.jpgOption.Text = "Format JPG";
+            this.jpgOption.Click += new System.EventHandler(this.toggleJPG_PNG);
+            // 
+            // pngOption
+            // 
+            this.pngOption.CheckOnClick = true;
+            this.pngOption.Name = "pngOption";
+            this.pngOption.Size = new System.Drawing.Size(172, 26);
+            this.pngOption.Text = "Format PNG";
+            this.pngOption.Click += new System.EventHandler(this.toggleJPG_PNG);
+            // 
+            // appendUnderscoreToolStripMenuItem
+            // 
+            this.appendUnderscoreToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.appendTrue,
+            this.appendFalse});
+            this.appendUnderscoreToolStripMenuItem.Name = "appendUnderscoreToolStripMenuItem";
+            this.appendUnderscoreToolStripMenuItem.Size = new System.Drawing.Size(227, 26);
+            this.appendUnderscoreToolStripMenuItem.Text = "Append Underscore";
+            // 
+            // appendTrue
+            // 
+            this.appendTrue.CheckOnClick = true;
+            this.appendTrue.Name = "appendTrue";
+            this.appendTrue.Size = new System.Drawing.Size(224, 26);
+            this.appendTrue.Text = "Append \"_\"";
+            this.appendTrue.Click += new System.EventHandler(this.toggleAppend);
+            // 
+            // appendFalse
+            // 
+            this.appendFalse.CheckOnClick = true;
+            this.appendFalse.Name = "appendFalse";
+            this.appendFalse.Size = new System.Drawing.Size(224, 26);
+            this.appendFalse.Text = "Do NOT Append \"_\"";
+            this.appendFalse.Click += new System.EventHandler(this.toggleAppend);
             // 
             // rosterToolStripMenuItem
             // 
@@ -102,6 +163,11 @@ namespace GTAA_PhotoLabel
             this.configureRosterToolStripMenuItem.Size = new System.Drawing.Size(209, 26);
             this.configureRosterToolStripMenuItem.Text = "&Configure Rosters";
             this.configureRosterToolStripMenuItem.Click += new System.EventHandler(this.configureRosterToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(222, 6);
             // 
             // filePhoto
             // 
@@ -198,11 +264,32 @@ namespace GTAA_PhotoLabel
             this.label1.TabIndex = 9;
             this.label1.Text = "Console Input:";
             // 
+            // revert
+            // 
+            this.revert.Location = new System.Drawing.Point(601, 525);
+            this.revert.Name = "revert";
+            this.revert.Size = new System.Drawing.Size(134, 23);
+            this.revert.TabIndex = 10;
+            this.revert.Text = "Revert Name";
+            this.revert.UseVisualStyleBackColor = true;
+            this.revert.Click += new System.EventHandler(this.revert_Click);
+            // 
+            // counter
+            // 
+            this.counter.AutoSize = true;
+            this.counter.Location = new System.Drawing.Point(668, 47);
+            this.counter.Name = "counter";
+            this.counter.Size = new System.Drawing.Size(67, 16);
+            this.counter.TabIndex = 11;
+            this.counter.Text = "9999/9999";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1054, 594);
+            this.Controls.Add(this.counter);
+            this.Controls.Add(this.revert);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.config_roster);
             this.Controls.Add(this.current_sport);
@@ -215,7 +302,7 @@ namespace GTAA_PhotoLabel
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Hello";
+            this.Text = "Photo Labeller";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filePhoto)).EndInit();
@@ -233,6 +320,7 @@ namespace GTAA_PhotoLabel
 
         private ToolStripMenuItem rosterToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator toolStripSeparator4;
         private ToolStripMenuItem configureRosterToolStripMenuItem;
         private PictureBox filePhoto;
         private Label FileName_label;
@@ -243,6 +331,14 @@ namespace GTAA_PhotoLabel
         private Label current_sport;
         private Button config_roster;
         private Label label1;
+        private ToolStripMenuItem ImageFormat;
+        private ToolStripRadioButtonMenuItem appendTrue;
+        private ToolStripRadioButtonMenuItem appendFalse;
+        private ToolStripRadioButtonMenuItem jpgOption;
+        private ToolStripRadioButtonMenuItem pngOption;
+        private ToolStripMenuItem appendUnderscoreToolStripMenuItem;
+        private Button revert;
+        private Label counter;
     }
 }
 
